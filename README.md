@@ -106,5 +106,6 @@ Upgrade scripts can be found in upgrade-scripts folder. They must be run from we
 Known Issues and Limitations
 ----------------------------
 - If you pass the database password to the command (using the `--dbpass` option), you might see a warning saying "Using a password on the command line interface can be insecure". This is just a warning from MySQL and it doesn't interfere with the installation process.
+- You can pass the database host to the command using the `--dbhost` option.
 - If you check the command output, you might see an error message saying "Error while trying to find the common path for enabled extensions of project radix. Extensions are: civihr_default_theme, default, radix.". We're working on fixing this, but for the moment, you can igore it, since it doesn't interfere with the installation.
 - The created site is not suitable for development, as it lacks many of the tools necessary for this
