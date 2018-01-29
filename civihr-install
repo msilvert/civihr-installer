@@ -296,7 +296,7 @@ function _database_install_cms() {
       mysql -u$DB_USER $PASS_PARAM -h $CMS_DB_HOST -e "drop database $CMSdbName" || { echo "[[Please fix above MySQL error.]]"; exit 1;  }
   fi
   # Create database.
-  #mysql -u$DB_USER $PASS_PARAM -h $CMS_DB_HOST -e "create database $CMSdbName" || { echo "[[Please fix above MySQL error.]]"; exit 1;  }
+  mysql -u$DB_USER $PASS_PARAM -h $CMS_DB_HOST -e "create database $CMSdbName" || { echo "[[Please fix above MySQL error.]]"; exit 1;  }
   # Assign values to global variables.
   [ -z "$CMS_DB_USER" ]           && CMS_DB_USER="$DB_USER"
   [ -z "$CMS_DB_PASS" ]           && CMS_DB_PASS="$DB_PASS"
@@ -321,10 +321,10 @@ function _database_install_civi() {
   civihr_assert_vars _database_install_civi CMS_ROOT SITE_NAME SITE_ID TMPDIR
   # Force drop database.
   if [ "$FORCE_DROP" ]; then
-      mysql -u$DB_USER $PASS_PARAM -h $CMS_DB_HOST -e "drop database $CIVIdbName" || { echo "[[Please fix above MySQL error.]]"; exit 1;  }
+      mysql -u$DB_USER $PASS_PARAM -h $CIVI_DB_HOST -e "drop database $CIVIdbName" || { echo "[[Please fix above MySQL error.]]"; exit 1;  }
   fi
   # Create database.
-  #mysql -u$DB_USER $PASS_PARAM -h $CIVI_DB_HOST -e "create database $CIVIdbName" || { echo "[[Please fix above MySQL error.]]"; exit 1;  }
+  mysql -u$DB_USER $PASS_PARAM -h $CIVI_DB_HOST -e "create database $CIVIdbName" || { echo "[[Please fix above MySQL error.]]"; exit 1;  }
   # Assign values to global variables.
   [ -z "$CIVI_DB_USER" ]           && CIVI_DB_USER="$DB_USER"
   [ -z "$CIVI_DB_PASS" ]           && CIVI_DB_PASS="$DB_PASS"
@@ -359,14 +359,14 @@ function civicrm_install() {
 
   pushd "$CIVI_CORE" >> /dev/null
     if [ -e "sql/civicrm.mysql" -a -e "sql/civicrm_generated.mysql" ]; then
-      cat sql/civicrm.mysql sql/civicrm_generated.mysql | mysql -u$CIVI_DB_USER $PASS_PARAM $CIVI_DB_NAME
+      cat sql/civicrm.mysql sql/civicrm_generated.mysql | mysql -u$CIVI_DB_USER $PASS_PARAM -h $CIVI_DB_HOST $CIVI_DB_NAME
 
     else
       echo "Failed to locate civi SQL files"
     fi
   popd >> /dev/null
 
-  eval mysql -u$CIVI_DB_USER $PASS_PARAM $CIVI_DB_NAME <<EOSQL
+  eval mysql -u$CIVI_DB_USER $PASS_PARAM -h $CIVI_DB_HOST $CIVI_DB_NAME <<EOSQL
     UPDATE civicrm_domain SET name = '$CIVI_DOMAIN_NAME';
     SELECT @option_group_id := id
       FROM civicrm_option_group n
